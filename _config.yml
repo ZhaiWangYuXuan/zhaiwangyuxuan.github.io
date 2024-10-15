@@ -16,7 +16,7 @@ timezone: Asia/Shanghai
 
 title: Wangyuxuan zhai # the main title
 
-tagline: This is my own blog, which is ONLY used for academic matters. If you want to contact my for personal things, please refer to [my personal website](https://www.hewkick-daze.icu) # it will display as the subtitle
+tagline: This is my own blog, which is ONLY used for academic matters. Click "ABOUT" below to get more information. # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   Hello world!!!
