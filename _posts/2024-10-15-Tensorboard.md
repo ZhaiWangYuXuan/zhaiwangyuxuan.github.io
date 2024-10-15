@@ -1,31 +1,33 @@
 ---
 title: 【pytorch笔记】Tensorboard怎么用
-date: 2024-10-15 17:00:00 +0800
+date: 2024-10-15 20:00:00 +0800
 categories: [deep learning, pytorch]
 tags: [deep learning, python, pytorch]     # TAG names should always be lowercase
 description: Tensorboard怎么用
 ---
 
-# 前言
+## 前言
 - 使用教程来自[小土堆pytorch教程](https://www.bilibili.com/video/BV1hE411t7RN)
 - 配置环境：torch2.0.1+cu118与对应torchaudio和torchvision
 
-# 引入库
+## 库与端口
+
+### 引入库
 ```python
 from torch.utils.tensorboard import SummaryWriter # 引入SummaryWriter这个类
 ```
 
-# 查看转发端口
+### 查看转发端口
 ```bash
 tensorboard --logdir=logs
 ```
 
-# 修改端口
+### 修改端口
 ```bash
 tensorboard --logdir=logs --port=6007
 ```
 
-# 测试代码
+## 测试代码01
 ```python
 from torch.utils.tensorboard import SummaryWriter # 这是一个类
 writer = SummaryWriter("logs")
@@ -37,14 +39,14 @@ for i in range(100):
 writer.close()
 ```
 
-## 如何使用上述代码？
+### 如何使用上述代码？
 1. vscode中先运行该段代码
 2. 运行后，在终端输入 `tensorboard --logdir=logs`
 3. 弹出提示，跳转到浏览器查看图像
 
-# SummaryWriter()解释
+### SummaryWriter()解释
 ```python
-mySaveDir = "Hewkick/logs"
+mySaveDir = "test/logs"
 writer = SummaryWriter(log_dir=mySaveDir)
 # 最常用的形式
 # 输入参数默认为log_dir=
@@ -52,7 +54,7 @@ writer = SummaryWriter(log_dir=mySaveDir)
 # 其他参数随用随查
 ```
 
-# .add_scalar()方法解释
+### .add_scalar()方法解释
 ```python
 writer.addscalar()
 # tag (str): 图表标题
@@ -62,7 +64,39 @@ writer.addscalar()
 ```
 
 - 如果想要修改函数图像，必须先**运行修改后的代码**，再输入 `tensorboard --logdir=logs`
-- 如果发现图像很混乱（即同时出现了多种代码图像），那么，去自己的设定的 log_dir 文件夹，删除里面的所有文件，再运行代码，终端输入 `tensorboard --logdir=logs` 即可
+- 如果发现图像很混乱（即同时出现了多种函数图像），那么，去自己的设定的 log_dir 文件夹，删除里面的所有文件，再运行代码，终端输入 `tensorboard --logdir=logs` 即可
 
+## 测试代码02
+```python
+from torch.utils.tensorboard import SummaryWriter # 这是一个类
+from PIL import Image
+import numpy as np
 
-# 还在更新 这没写完呢 别急
+writer = SummaryWriter(log_dir="logs")
+pic_path = ["test1.jpg", "test2.jpg"]
+
+for i in range(len(pic_path)):
+    img_PIL = Image.open(pic_path[i])
+    print(type(img_PIL))
+
+    img_np = np.array(img_PIL) # 转成numpy.ndarray
+    print(img_np.shape)
+
+    writer.add_image("test", img_np, i + 1, dataformats="HWC")
+
+writer.close()
+```
+
+### 引入PIL.Image与numpy的解释
+1. 使用Image.open()引入图片，但注意到 .add_image() 接受的图片格式为(torch.Tensor, numpy.ndarray, or string/blobname) 但 Image.open() 办法获取的图片格式为 PIL.JpegImagePlugin.JpegImageFile 显然不匹配，**不能直接使用**该办法
+
+2. 考虑使用 numpy.ndarray，通过 np.array() 转换，但依然报错。注意到 img_tensor: Default is :math:`(3, H, W)`。用 print(img_np.shape) 检查 输出 (512, 768, 3) 形状大差不差。又注意到 ``dataformats`` argument is passed, e.g. ``CHW``, ``HWC``, ``HW``。这其实是在说，在图片 shape 并非严格的 CHW 的情况下，**需要指定 dataformats 等于什么**
+
+### .add_image()解释
+```python
+writer.add_image()
+# tag (str):图像标题
+# img_tensor (torch.Tensor, numpy.ndarray, or string/blobname): 输入图像数据
+# global_step (int): 第几步
+# dataformats (str): Image data format specification of the form: CHW, HWC, HW, WH, etc. 指定图片的通道数Channel、高度Height、宽度Width
+```
