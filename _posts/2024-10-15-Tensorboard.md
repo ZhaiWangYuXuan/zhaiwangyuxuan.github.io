@@ -43,7 +43,7 @@ writer.close()
 2. 运行后，在终端输入 `tensorboard --logdir=logs`
 3. 弹出提示，跳转到浏览器查看图像
 
-## SummaryWriter解释
+## SummaryWriter()解释
 ```python
 mySaveDir = "Hewkick/logs"
 writer = SummaryWriter(log_dir=mySaveDir)
