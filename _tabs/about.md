@@ -13,7 +13,7 @@ order: 4
 ## 这个网站是什么 What is it
 
 - 这是我基于github.io构建的个人**学术**网页，也就是说，该网页专注且**仅关注**于学术相关的事项
-- This is my own **academic** website founded by github.io, i.e. This website **ONLY** focus on academic matters
+- This is my own **academic** website founded by github.io, i.e. This website **ONLY** focuses on academic matters
 
 ## 这个网站的用途 The usage of this website
 - 记录自己学习的笔记
