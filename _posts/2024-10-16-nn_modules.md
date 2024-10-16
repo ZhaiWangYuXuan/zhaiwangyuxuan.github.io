@@ -109,4 +109,4 @@ tensor([[[[ 1,  3,  4, 10,  8],
 
 - 参考图片
 
-![卷积层](..\assets\post_img\2024-10-16-nn_modules_01.png)
+![卷积层](assets/post_img/2024-10-16-nn_modules_01.png)
