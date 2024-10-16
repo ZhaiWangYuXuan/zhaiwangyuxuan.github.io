@@ -1,6 +1,6 @@
 ---
 title: 【pytorch笔记】Transformers怎么用
-date: 2024-10-15 20:00:00 +0800
+date: 2024-10-16 15:00:00 +0800
 categories: [deep learning, pytorch]
 tags: [deep learning, python, pytorch]     # TAG names should always be lowercase
 description: Transformers怎么用
@@ -79,6 +79,7 @@ myTransform = transforms.Compose([
     transforms.ToTensor()  # 转换为张量
 ])
 ```
+- Compose([transfromer参数1, transfromer参数2])，注意，里面是个**列表**！
 
 ### ToTensor() 类
 ```python
@@ -99,3 +100,31 @@ Given mean: ``(mean[1],...,mean[n])`` and std: ``(std[1],..,std[n])`` for ``n``c
 output\[channel\] = (input\[channel\] - mean\[channel\]) / std\[channel\]
 
 **归一化，使得范围归一到\[-1, 1\]**
+
+### Resize 类
+```python
+tran_resize = transforms.Resize((224, 224))
+# size (sequence or int): Desired output size. If size is a sequence like (h, w)
+# 创建对象的时候设定 resize 到什么格式
+res2 = tran_resize(img)
+res3 = tran_totensor(res2) # 可以接 ToTensor 类 Resize后的结果不变
+```
+
+### RandomCrop 类 - 随机裁剪
+```python
+tran_randomcrop = transforms.RandomCrop((224, 224))
+tran_compose = transforms.Compose([
+    tran_randomcrop,
+    tran_totensor
+])
+res4 = tran_compose(img)
+```
+
+- size (sequence or int): Desired output size of the crop. If size is an int instead of sequence like (h, w), a square crop (size, size) is made. If provided a sequence of length 1, it will be interpreted as (size[0], size[0]).
+- 如果输入一个数字size，就给裁剪成 (size, size)。如果输入一个序列 (h, w)，就裁剪成给定模样；如果输入一个只有一个元素的序列，则裁剪成 (size\[0\], size\[0\])
+
+
+## 总结使用方法
+- 关注输入、输出与对应参数是什么
+- 多看官方文档
+- `print()` - `print(type())` 都是好办法
