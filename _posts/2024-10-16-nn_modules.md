@@ -15,7 +15,9 @@ description: nn.modules怎么用
 import torch.nn as nn
 ```
 
-## 实例代码01 - 官方代码
+## 直观测试
+
+### 实例代码01 - 官方代码
 ```python
 # Base class for all neural network modules.
 # Your models should also subclass this class.
@@ -38,7 +40,7 @@ class Model(nn.Module): # 必须继承 nn.module 这个父类
 > 必须继承 `nn.module` 这个父类
 {: .prompt-info }
 
-## 实例代码02 - 自用测试
+### 实例代码02 - 自用测试
 ```python
 class test(nn.Module):
     def __init__(self):
@@ -55,3 +57,56 @@ print(output_x)
 ```
 
 - 其实没啥说的，实现一个简单的 +1 操作，不过有了 `forward()` 办法后，直接用括号就可以，不用 `.forward()` 了
+
+## 神经网络
+
+### 神经网络 - 卷积层
+- 以 conv2 - 二维卷积层 为例
+
+```python
+import torch.nn as nn
+import torch.nn.functional as F
+import torch
+
+input = torch.tensor([[1, 2, 0, 3, 1],
+                      [0, 1, 2, 3, 1],
+                      [1, 2, 1, 0, 0],
+                      [5, 2, 3, 1, 1],
+                      [2, 1, 0, 1, 1]])
+
+kernel = torch.tensor([[1, 2, 1],
+                       [0, 1, 0],
+                       [2, 1, 0]])
+
+
+input = torch.reshape(input, (1, 1, 5, 5)) # 前两个1是 Batch Channel
+kernel = torch.reshape(kernel, (1, 1, 3, -1))
+
+output = F.conv2d(input, kernel, stride=1)
+output2 = F.conv2d(input, kernel, stride=2)
+output3 = F.conv2d(input, kernel, stride=1, padding=1)
+
+# input 输入tensor
+# weight 输入 卷积核 kernel
+# stride 就是步长
+# padding 是否自动填充
+
+'''
+tensor([[[[10, 12, 12],
+          [18, 16, 16],
+          [13,  9,  3]]]])
+
+tensor([[[[10, 12],
+          [13,  3]]]])
+
+tensor([[[[ 1,  3,  4, 10,  8],
+          [ 5, 10, 12, 12,  6],
+          [ 7, 18, 16, 16,  8],
+          [11, 13,  9,  3,  4],
+          [14, 13,  9,  7,  4]]]])
+'''
+```
+
+- 参考图片
+
+![卷积层](..\assets\post_img\2024-10-16-nn_modules_01.png)
