@@ -178,3 +178,32 @@ output = test_maxpool(input)
 
 - 参考图片
 ![最大池化](assets/post_img/2024-10-16-nn_modules_02.png)
+
+
+### 神经网络 - 非线性激活
+
+- inplace 默认False True的情况下替代 False的情况下返回一个新 tensor
+
+```python
+input = torch.tensor([[1, -0.5],
+                      [3, -1]])
+
+input = torch.reshape(input, (1, 1, 2, 2))
+
+class myModel(nn.Module):
+
+    def __init__(self):
+        super().__init__()  
+        self.relu1 = nn.ReLU(inplace=False)
+        # 默认函数是 max(0, x)
+
+        self.sigmoid = nn.Sigmoid()
+        # 这边用一下经典的非线性激活函数 Sigmoid()
+
+    def forward(self, input):
+        output = self.sigmoid(input)
+        return output
+
+model = myModel()
+output = model(input)
+```
