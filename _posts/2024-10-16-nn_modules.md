@@ -40,28 +40,12 @@ class Model(nn.Module): # 必须继承 nn.module 这个父类
 > 必须继承 `nn.module` 这个父类
 {: .prompt-info }
 
-### 实例代码02 - 自用测试
-```python
-class test(nn.Module):
-    def __init__(self):
-        super().__init__()
-
-    def forward(self, input):
-        output = input + 1
-        return output
-    
-mymodel = test()
-test_x = torch.tensor(1.0)
-output_x = mymodel(test_x)
-print(output_x)
-```
-
 - 其实没啥说的，实现一个简单的 +1 操作，不过有了 `forward()` 办法后，直接用括号就可以，不用 `.forward()` 了
 
 ## 神经网络
 
-### 神经网络 - 卷积层
-- 以 conv2 - 二维卷积层 为例
+### 神经网络 - 卷积层01
+- 以 torch.nn.functional.conv2d 中的 conv2d - 二维卷积层 为例
 
 ```python
 import torch.nn as nn
@@ -86,11 +70,6 @@ output = F.conv2d(input, kernel, stride=1)
 output2 = F.conv2d(input, kernel, stride=2)
 output3 = F.conv2d(input, kernel, stride=1, padding=1)
 
-# input 输入tensor
-# weight 输入 卷积核 kernel
-# stride 就是步长
-# padding 是否自动填充
-
 '''
 tensor([[[[10, 12, 12],
           [18, 16, 16],
@@ -107,6 +86,96 @@ tensor([[[[ 1,  3,  4, 10,  8],
 '''
 ```
 
+- input 输入tensor
+- weight 输入 卷积核 kernel
+- stride 就是步长
+- padding 是否自动填充
+- dilation 元素间的步长
+
 - 参考图片
 
 ![卷积层](assets/post_img/2024-10-16-nn_modules_01.png)
+
+### 神经网络 - 卷积层02
+- 以 `torch.nn.Conv2d` 这个类为例
+- `kernel_size` 就是卷积窗口有多大
+
+```python
+# 自定义类
+class myModel(nn.Module):
+
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=6,
+                               kernel_size=3, stride=1,
+                               padding=0)
+
+    def forward(self, input):
+        output = self.conv1(input)
+        return output
+
+# 复习一下 Dataset Dataloader
+dataset = torchvision.datasets.CIFAR10(root="tmp-tudui/CIFAR10", train=False,
+                                       transform=transforms.ToTensor(),
+                                       download=True)
+
+dataloader = DataLoader(dataset, batch_size=64, 
+                        shuffle=False, num_workers=0)
+
+# 创建对象
+test_model = myModel()
+
+step = 0
+for data in dataloader:
+    img, label = data
+    print(img.shape) # torch.Size([64, 3, 32, 32])
+
+    output = test_model(img)
+    print(output.shape) # torch.Size([64, 6, 30, 30])
+
+    output = torch.reshape(output, (-1, 3, 30, 30))
+    print(output.shape) # torch.Size([128, 3, 30, 30])
+
+    step = step + 1
+
+```
+
+### 神经网络 - 最大池化
+
+- `MaxPool` 也叫做“下采样”
+- `MaxUnpool` 也叫做“上采样”
+- `ceil_mode` 是否对元素数量不够 `kernel_size` 数量的区域进行最大池化
+
+```python
+class myModel(nn.Module):
+
+    def __init__(self):
+        super().__init__()  
+        self.maxpool1 = nn.MaxPool2d(kernel_size=3, ceil_mode=True)
+
+    def forward(self, input):
+        output = self.maxpool1(input)
+        return output
+
+input = torch.tensor([[1, 2, 0, 3, 1],
+                      [0 ,1, 2, 3, 1],
+                      [1, 2, 1, 0, 0],
+                      [5, 2, 3, 1, 1],
+                      [2, 1, 0, 1, 1]], dtype=torch.float32)
+# 注意 输入进去的数据格式必须是浮点数
+
+# 阅读文档可知
+# input 格式要为 (N, C, H, W) 或者 (C, H, W)
+input = input.reshape((1, 1, 5, -1))
+
+test_maxpool = myModel()
+output = test_maxpool(input)
+```
+
+- 输入进去的数据格式必须是浮点数
+- input 格式要为 (N, C, H, W) 或者 (C, H, W)
+- **最大池化的意义：在保障数据质量的情况下，减少数据参数**
+
+- 参考图片
+![最大池化](assets\post_img\2024-10-16-nn_modules_02.png)
+
