@@ -177,5 +177,4 @@ output = test_maxpool(input)
 - **最大池化的意义：在保障数据质量的情况下，减少数据参数**
 
 - 参考图片
-![最大池化](assets\post_img\2024-10-16-nn_modules_02.png)
-
+![最大池化](assets/post_img/2024-10-16-nn_modules_02.png)
