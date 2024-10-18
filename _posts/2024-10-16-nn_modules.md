@@ -207,3 +207,50 @@ class myModel(nn.Module):
 model = myModel()
 output = model(input)
 ```
+
+### 神经网络 - 线性层及其它层介绍
+
+- Recurrent Layers -> 主要用于字体识别
+- Linear Layers -> 一般通过线性层：
+                    直接看图，注意，参数中的 `bias` 代表线性方程中的 `b` 要不要有，默认有的;
+                    ![参考图片](assets/post_img/2024-10-16-nn_modules_03.png)
+- Dropout Layers -> During training, randomly zeroes some of the elements 
+                    of the input tensor with probability p 
+                    (部分输入张量的元素会以p的概率变成0) -> 
+                    [理论论文](https://arxiv.org/abs/1207.0580)
+- Sparse Layers ->  主要用于自然语言处理(稀疏层)
+                    A simple lookup table that stores embeddings of a fixed dictionary and size.
+                    (一个简单的查找表，用来存储对应字典和大小的嵌入)
+                    This module is often used to store word embeddings and retrieve them using indices.
+                    (用来存储字词嵌入并通过索引将它们恢复)
+
+
+- 线性层示例
+```python
+class mymodel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear1 = nn.Linear(in_features, out_features)
+
+    def forward(self, input):
+        output = self.linear1(input)
+        return output
+
+```
+
+- 随手学一个 `torch.flatten()`
+```python
+torch.flatten(input, start_dim, end_dim)
+# input 输入一个张量
+# start_dim 转换成 start_dim + 1 维度
+
+t = torch.tensor([[[1, 2],
+                   [3, 4]],
+                  [[5, 6],
+                   [7, 8]]])
+torch.flatten(t)
+# tensor([1, 2, 3, 4, 5, 6, 7, 8])
+torch.flatten(t, start_dim=1)
+# tensor([[1, 2, 3, 4],
+#         [5, 6, 7, 8]])
+```
