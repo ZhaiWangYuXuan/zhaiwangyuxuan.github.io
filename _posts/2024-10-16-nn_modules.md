@@ -226,6 +226,7 @@ output = model(input)
 
 
 - 线性层示例
+
 ```python
 class mymodel(nn.Module):
     def __init__(self):
@@ -235,10 +236,10 @@ class mymodel(nn.Module):
     def forward(self, input):
         output = self.linear1(input)
         return output
-
 ```
 
 - 随手学一个 `torch.flatten()`
+
 ```python
 torch.flatten(input, start_dim, end_dim)
 # input 输入一个张量
